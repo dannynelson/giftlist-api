@@ -27,15 +27,12 @@ var spooky = new Spooky({
 
     spooky.start('http://www.amazon.com/gp/registry/wishlist');
 
-    spooky.thenEvaluate(function () {
-      // this.fill('form[action="/gp/registry/search"]', { 'field-name': 'danielnelsonguitar@gmail.com' }, false);
-      document.getElementsByClassName('a-input-text')[0].value = 'christian.monaghan@gmail.com';
+    spooky.thenEvaluate(function (email) {
+      document.getElementsByClassName('a-input-text')[0].value = email;
       document.getElementsByClassName('a-button-input')[1].click();
-      // $('.a-button-input')[1].click();
-      // document.querySelector('form[action="/gp/registry/search"]').submit();
+    },{
+      email: email
     });
-
-    // spooky.click();
 
     spooky.then(function () {
       var id = this.evaluate(function () {
@@ -43,12 +40,8 @@ var spooky = new Spooky({
         return paths[paths.length - 1];
       });
 
-      // this.emit('hello', 'Title is ' + this.evaluate(function () {
-      //   return document.title;
-      // }));
       this.emit('id', id);
     });
-
 
     spooky.run();
   });
@@ -81,11 +74,11 @@ spooky.on('console', function (line) {
 //   }
 // });
 
+
 spooky.on('id', function (id) {
   console.log(id);
   request('http://www.justinscarpetti.com/projects/amazon-wish-lister/api/?id='+id, function (error, response, json) {
     if (!error && response.statusCode == 200) {
-      // console.log(json); // Print the google web page.
       json = JSON.parse(json);
       var items = json.filter(function (el, i) {
         return i % 2 === 0;
@@ -93,7 +86,8 @@ spooky.on('id', function (id) {
       console.log(JSON.stringify(items, null, 4));
     }
   });
-  // if (log.space === 'remote') {
-  //   console.log(log.message.replace(/ \- .*/, ''));
-  // }
+});
+
+spooky.on('test', function (test) {
+  console.log('TEST: '+test);
 });
