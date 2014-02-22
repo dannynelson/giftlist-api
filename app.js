@@ -8,7 +8,7 @@ var routes = require('./routes/index');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
-var cors = require('./middleWare/cors');
+var cors = require('./middleware/cors');
 
 var app = express();
 
