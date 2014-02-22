@@ -1,80 +1,62 @@
+var Spooky = require('spooky');
 var request = require('request');
 var _ = require('lodash');
 
 var email = 'christian.monaghan@gmail.com';
 
-try {
-  var Spooky = require('spooky');
-} catch (e) {
-  var Spooky = require('../lib/spooky');
-}
+var spookyConfig = {
+  child: {
+    transport: 'http'
+  },
+  casper: {
+    logLevel: 'debug',
+    verbose: true
+  }
+};
 
-var spooky = new Spooky({
-    child: {
-      transport: 'http'
-    },
-    casper: {
-      // clientScripts:  ['http://code.jquery.com/jquery-2.1.0.min.js'],
-      logLevel: 'debug',
-      verbose: true
-    }
-  }, function (err) {
-    if (err) {
-      e = new Error('Failed to initialize SpookyJS');
-      e.details = err;
-      throw e;
-    }
+// module.exports = function (email, cb) {
+  
+// }
 
-    spooky.start('http://www.amazon.com/gp/registry/wishlist');
+var spooky = new Spooky(spookyConfig, function (err) {
+  if (err) {
+    e = new Error('Failed to initialize SpookyJS');
+    e.details = err;
+    throw e;
+  }
 
-    spooky.thenEvaluate(function (email) {
-      document.getElementsByClassName('a-input-text')[0].value = email;
-      document.getElementsByClassName('a-button-input')[1].click();
-    },{
-      email: email
-    });
+  // Start spooky
+  // ------------------------------
+  spooky.start('http://www.amazon.com/gp/registry/wishlist');
 
-    spooky.then(function () {
-      var id = this.evaluate(function () {
-        var paths = location.pathname.split('/');
-        return paths[paths.length - 1];
-      });
-
-      this.emit('id', id);
-    });
-
-    spooky.run();
+  spooky.thenEvaluate(function (email) {
+    document.getElementsByClassName('a-input-text')[0].value = email;
+    document.getElementsByClassName('a-button-input')[1].click();
+  },{
+    email: email
   });
 
-spooky.on('error', function (e, stack) {
-  console.error(e);
+  spooky.then(function () {
+    var id = this.evaluate(function () {
+      var paths = location.pathname.split('/');
+      return paths[paths.length - 1];
+    });
 
-  if (stack) {
-    console.log(stack);
-  }
+    this.emit('id', id);
+  });
+
+  spooky.run();
 });
 
-/*
-// Uncomment this block to see all of the things Casper has to say.
-// There are a lot.
-// He has opinions.
-spooky.on('console', function (line) {
-  console.log(line);
-});
-*/
-
-// spooky.on('hello', function (greeting) {
-//   console.log(greeting);
-// });
-
-// spooky.on('href', function (log) {
-  
-//   if (log.space === 'remote') {
-//     console.log(log.message.replace(/ \- .*/, ''));
-//   }
+// Spooky Logger
+// ------------------------------
+// spooky.on('console', function (line) {
+//   console.log(line);
 // });
 
 
+// Spooky listeners
+// ------------------------------
 spooky.on('id', function (id) {
   console.log(id);
   request('http://www.justinscarpetti.com/projects/amazon-wish-lister/api/?id='+id, function (error, response, json) {
@@ -88,6 +70,7 @@ spooky.on('id', function (id) {
   });
 });
 
-spooky.on('test', function (test) {
-  console.log('TEST: '+test);
+spooky.on('error', function (e, stack) {
+  console.error(e);
+  if (stack) console.log(stack);
 });
