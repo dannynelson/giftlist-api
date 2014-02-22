@@ -7,6 +7,8 @@
   },
   "dependencies": {
     "express": "3.4.8",
+    "casperjs": "~1.1.0-beta3",
+    "phantomjs": "~1.9.7-1",
     "spooky": "~0.2.4",
     "request": "~2.34.0",
     "lodash": "~2.4.1"
