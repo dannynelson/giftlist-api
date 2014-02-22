@@ -8,12 +8,13 @@ var routes = require('./routes/index');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
+var cors = require('./middleWare/cors');
 
 var app = express();
 
 // all environments
 app.set('port', process.env.PORT || 3000);
-app.set('views', path.join(__dirname, 'views'));
+app.use(cors.headers);
 app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
