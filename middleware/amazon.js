@@ -1,10 +1,8 @@
 var Spooky = require('spooky');
 var request = require('request');
-var _ = require('lodash');
-
-var email = 'christian.monaghan@gmail.com';
 
 module.exports = function (email, onSuccess) {
+  var items = {};
   var spookyConfig = {
     child: {
       transport: 'http'
@@ -27,7 +25,9 @@ module.exports = function (email, onSuccess) {
     spooky.start('http://www.amazon.com/gp/registry/wishlist');
 
     spooky.thenEvaluate(function (email) {
+      // fill search box with email
       document.getElementsByClassName('a-input-text')[0].value = email;
+      // click search button
       document.getElementsByClassName('a-button-input')[1].click();
     },{
       email: email
@@ -59,7 +59,7 @@ module.exports = function (email, onSuccess) {
     request('http://www.justinscarpetti.com/projects/amazon-wish-lister/api/?id='+id, function (error, response, json) {
       if (!error && response.statusCode == 200) {
         json = JSON.parse(json);
-        var items = json.filter(function (el, i) {
+        items = json.filter(function (el, i) {
           return i % 2 === 0;
         });
         console.log(JSON.stringify(items, null, 4));

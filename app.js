@@ -5,7 +5,7 @@
 
 var express = require('express');
 var routes = require('./routes/index');
-var user = require('./routes/user');
+var macys = require('./routes/macys');
 var http = require('http');
 var path = require('path');
 var cors = require('./middleware/cors');
@@ -28,7 +28,7 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/wishlist/:email', routes.index);
-app.get('/users', user.list);
+app.get('/macys', macys.data);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
