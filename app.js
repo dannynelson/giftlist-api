@@ -28,7 +28,8 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/wishlist/:email', routes.index);
-app.get('/macys', macys.data);
+// path takes dashes
+app.get('/macys/:path', macys.data);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
